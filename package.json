@@ -1,0 +1,26 @@
+{
+  "name": "express-vercel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "18.4.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Suchakhri/node-express-vercel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Suchakhri/node-express-vercel/issues"
+  },
+  "homepage": "https://github.com/Suchakhri/node-express-vercel#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
