@@ -35,27 +35,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/webhook", line.middleware(lineConfig), (req, res) => {
-  Promise.all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
+  try {
+    const events = req.body.events;
+    console.log("events ====>", events);
+    return events.length > 0
+      ? events.map((item) => handleEvent(item))
+      : res.status(200).send("OK");
+  } catch (err) {
+    res.status(500).end();
+  }
 });
 
 // event handler
-function handleEvent(event) {
-  if (event.type !== "message" || event.message.type !== "text") {
-    // ignore non-text-message event
-    return Promise.resolve(null);
-  }
-
-  // create a echoing text message
-  const echo = { type: "text", text: event.message.text };
-
-  // use reply API
-  return client.replyMessage(event.replyToken, echo);
-}
+const handleEvent = async (event) => {
+  console.log(event);
+  return client.replyMessage(event.replyToken, { type: "text", text: "Test" });
+};
 // Insert Into
 app.post("/insert", async (req, res) => {
   const { name, address } = req.body;
