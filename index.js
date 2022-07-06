@@ -1,5 +1,5 @@
-const line = require("@line/bot-sdk");
-const axios = require("axios");
+// const line = require("@line/bot-sdk");
+// const axios = require("axios");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -22,13 +22,13 @@ db_conn.connect((err) => {
   );
 });
 
-const lineConfig = {
-  channelAccessToken: env.CHANNEL_ACCESS_TOKEN,
-  channelSecret: env.CHANNEL_SECRET,
-};
+// const lineConfig = {
+//   channelAccessToken: env.CHANNEL_ACCESS_TOKEN,
+//   channelSecret: env.CHANNEL_SECRET,
+// };
 
-// create LINE SDK client
-const client = new line.Client(lineConfig);
+// // create LINE SDK client
+// const client = new line.Client(lineConfig);
 
 app.get("/", (req, res) => {
   res.json(`Serer is running on PORT : ${PORT}.`);
