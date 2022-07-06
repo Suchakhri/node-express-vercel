@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
   res.json(`Serer is running on PORT : ${PORT}.`);
 });
 
-app.post("/callback", line.middleware(lineConfig), (req, res) => {
+app.post("/webhook", line.middleware(lineConfig), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
     .catch((err) => {
