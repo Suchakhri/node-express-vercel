@@ -1,5 +1,5 @@
-const line = require("@line/bot-sdk");
-// const axios = require("axios");
+// const line = require("@line/bot-sdk");
+const axios = require("axios");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8000;
