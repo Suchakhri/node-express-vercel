@@ -1,3 +1,5 @@
+const line = require("@line/bot-sdk");
+const axios = require("axios");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -20,10 +22,40 @@ db_conn.connect((err) => {
   );
 });
 
+const lineConfig = {
+  channelAccessToken: env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: env.CHANNEL_SECRET,
+};
+
+// create LINE SDK client
+const client = new line.Client(lineConfig);
+
 app.get("/", (req, res) => {
   res.json(`Serer is running on PORT : ${PORT}.`);
 });
 
+app.post("/callback", line.middleware(lineConfig), (req, res) => {
+  Promise.all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
+});
+
+// event handler
+function handleEvent(event) {
+  if (event.type !== "message" || event.message.type !== "text") {
+    // ignore non-text-message event
+    return Promise.resolve(null);
+  }
+
+  // create a echoing text message
+  const echo = { type: "text", text: event.message.text };
+
+  // use reply API
+  return client.replyMessage(event.replyToken, echo);
+}
 // Insert Into
 app.post("/insert", async (req, res) => {
   const { name, address } = req.body;
@@ -33,7 +65,7 @@ app.post("/insert", async (req, res) => {
       [name, address],
       (err, results, fields) => {
         if (err) {
-          console.log("Error while inserting row into the database : ", err);
+          console.log("err while inserting row into the database : ", err);
           return res.status(400).send();
         }
         return res
@@ -60,7 +92,7 @@ app.get("/select", async (req, res) => {
         return res.status(200).json(results);
       }
     );
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
@@ -81,7 +113,7 @@ app.get("/select/where/:address", async (req, res) => {
         return res.status(200).json(results);
       }
     );
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
@@ -105,7 +137,7 @@ app.patch("/update/:name", async (req, res) => {
           .json({ massage: results.affectedRows + " record(s) updated" });
       }
     );
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
@@ -131,7 +163,7 @@ app.delete("/delete/:name", async (req, res) => {
         });
       }
     );
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
