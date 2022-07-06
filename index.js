@@ -6,21 +6,21 @@ const PORT = process.env.PORT || 8000;
 const env = require("dotenv").config().parsed;
 var mysql = require("mysql");
 
-// app.use(express.json());
+app.use(express.json());
 // MySQL Connection
-// var db_conn = mysql.createConnection({
-//   host: env.db_host,
-//   user: env.db_user,
-//   password: env.db_password,
-//   port: env.db_port,
-//   database: env.db_database,
-// });
-// db_conn.connect((err) => {
-//   if (err) throw err;
-//   console.log(
-//     "Database is running on HOST : Amazon Relational Database Service."
-//   );
-// });
+var db_conn = mysql.createConnection({
+  host: env.db_host,
+  user: env.db_user,
+  password: env.db_password,
+  port: env.db_port,
+  database: env.db_database,
+});
+db_conn.connect((err) => {
+  if (err) throw err;
+  console.log(
+    "Database is running on HOST : Amazon Relational Database Service."
+  );
+});
 
 const lineConfig = {
   channelAccessToken: env.CHANNEL_ACCESS_TOKEN,
@@ -30,27 +30,28 @@ const lineConfig = {
 // create LINE SDK client
 const client = new line.Client(lineConfig);
 
-// app.get("/", (req, res) => {
-//   res.json(`Serer is running on PORT : ${PORT}.`);
-// });
-
-app.post("/webhook", line.middleware(lineConfig), (req, res) => {
-  try {
-    const events = req.body.events;
-    console.log("events ====>", events);
-    return events.length > 0
-      ? events.map((item) => handleEvent(item))
-      : res.status(200).send("OK");
-  } catch (err) {
-    res.status(500).end();
-  }
+app.get("/", (req, res) => {
+  res.json(`Serer is running on PORT : ${PORT}.`);
 });
 
-// event handler
-const handleEvent = async (event) => {
-  console.log(event);
-  return client.replyMessage(event.replyToken, { type: "text", text: "Test" });
-};
+// app.post("/webhook", line.middleware(lineConfig), (req, res) => {
+//   try {
+//     const events = req.body.events;
+//     console.log("events ====>", events);
+//     return events.length > 0
+//       ? events.map((item) => handleEvent(item))
+//       : res.status(200).send("OK");
+//   } catch (err) {
+//     res.status(500).end();
+//   }
+// });
+
+// // event handler
+// const handleEvent = async (event) => {
+//   console.log(event);
+//   return client.replyMessage(event.replyToken, { type: "text", text: "Test" });
+// };
+
 // // Insert Into
 // app.post("/insert", async (req, res) => {
 //   const { name, address } = req.body;
